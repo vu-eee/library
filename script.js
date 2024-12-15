@@ -1,7 +1,7 @@
 const API_KEY = 'AIzaSyCxoFLYO4wsf6lxQC3Nx_V81XGlqBM3Ips'; // Replace with your API key
 const ROOT_FOLDER_ID = '1-14QqqtyvPU7bzjy-EoGDBTLK5RtiYyd'; // Replace with your root Google Drive folder ID
 
-// Recursive function to fetch files and folders
+// Function to fetch files and folders
 async function fetchFolderContents(folderId) {
     const endpoint = `https://www.googleapis.com/drive/v3/files`;
     const params = new URLSearchParams({
@@ -13,58 +13,92 @@ async function fetchFolderContents(folderId) {
     try {
         const response = await fetch(`${endpoint}?${params}`);
         const data = await response.json();
-        const files = data.files;
-
-        // Process the files and folders
-        const folderContents = [];
-        for (const file of files) {
-            if (file.mimeType === 'application/vnd.google-apps.folder') {
-                // Recursively fetch subfolder contents
-                const subfolderContents = await fetchFolderContents(file.id);
-                folderContents.push({
-                    name: file.name,
-                    type: 'folder',
-                    contents: subfolderContents,
-                });
-            } else {
-                // Add file to the current folder
-                folderContents.push({
-                    name: file.name,
-                    type: 'file',
-                    link: file.webContentLink || file.webViewLink,
-                });
-            }
-        }
-        return folderContents;
+        return data.files || [];
     } catch (error) {
         console.error('Error fetching folder contents:', error);
         return [];
     }
 }
 
-// Display files and folders recursively on the webpage
+// Function to create a loading spinner
+function createSpinner() {
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    spinner.innerHTML = `
+        <style>
+            .spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid #ccc;
+                border-top: 2px solid #333;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    `;
+    return spinner;
+}
+
+// Function to toggle folder contents
+async function toggleFolderContents(folderLi, folderId) {
+    const sublist = folderLi.querySelector('ul');
+    const spinner = folderLi.querySelector('.spinner');
+
+    // Check if contents are already loaded
+    if (sublist) {
+        sublist.style.display = sublist.style.display === 'none' ? 'block' : 'none';
+        return;
+    }
+
+    // Show spinner while loading
+    const loadingSpinner = createSpinner();
+    folderLi.appendChild(loadingSpinner);
+
+    // Fetch subfolder contents
+    const contents = await fetchFolderContents(folderId);
+
+    // Remove spinner
+    loadingSpinner.remove();
+
+    // Create and append the sublist
+    const newSublist = document.createElement('ul');
+    displayFolderContents(contents, newSublist);
+    folderLi.appendChild(newSublist);
+}
+
+// Function to display files and folders
 function displayFolderContents(contents, container) {
     contents.forEach(item => {
         const li = document.createElement('li');
-        if (item.type === 'folder') {
-            // Folder: Display its name and recursively display its contents
+
+        if (item.mimeType === 'application/vnd.google-apps.folder') {
+            // Folder: Clickable to load contents
             li.textContent = `📁 ${item.name}`;
-            const sublist = document.createElement('ul');
-            displayFolderContents(item.contents, sublist);
-            li.appendChild(sublist);
+            li.style.cursor = 'pointer';
+
+            li.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                toggleFolderContents(li, item.id);
+            });
         } else {
             // File: Display as a link
             const link = document.createElement('a');
-            link.href = item.link;
+            link.href = item.webContentLink || item.webViewLink;
             link.target = '_blank';
             link.textContent = `📄 ${item.name}`;
             li.appendChild(link);
         }
+
         container.appendChild(li);
     });
 }
 
-// Fetch and display the entire folder hierarchy when the page loads
+// Initialize the folder viewer
 async function init() {
     const fileList = document.getElementById('file-list');
     fileList.innerHTML = '<li>Loading...</li>'; // Show loading message
