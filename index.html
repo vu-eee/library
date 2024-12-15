@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Drive Folder Viewer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive Viewer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Google Drive Folder Viewer</h1>
-    <ul id="file-list"></ul>
-    <script src="script.js"></script>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Google Drive Viewer</h1>
+      <h2>Folder Structure</h2>
+      <p>Navigate through your Google Drive folders.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <ul id="file-list"></ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Powered by Google Drive API</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
