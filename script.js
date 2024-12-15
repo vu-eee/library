@@ -1,4 +1,4 @@
-const API_KEY = '1386a4465bac5a489550b15e2cf548b3a2f531cf'; // Replace with your API key
+const API_KEY = 'AIzaSyCxoFLYO4wsf6lxQC3Nx_V81XGlqBM3Ips'; // Replace with your API key
 const FOLDER_ID = '1-14QqqtyvPU7bzjy-EoGDBTLK5RtiYyd'; // Replace with your Google Drive folder ID
 
 // Function to fetch files from Google Drive
