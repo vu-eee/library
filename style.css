@@ -1,0 +1,45 @@
+/* Apply existing styles from the provided CSS */
+
+/* Specific styles for folder viewer */
+#file-list {
+  list-style: none;
+  padding: 0;
+}
+
+#file-list li {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+#file-list li ul {
+  margin-left: 20px;
+}
+
+.folder {
+  display: flex;
+  align-items: center;
+}
+
+.folder span {
+  margin-left: 10px;
+}
+
+/* Spinner for loading */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #ff0; /* Yellow spinner */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
