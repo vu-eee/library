@@ -22,12 +22,12 @@ async function fetchFolderContents(folderId) {
 function createSpinner() {
   const spinner = document.createElement('div');
   spinner.className = 'spinner';
+  spinner.textContent = 'Loading...';
   return spinner;
 }
 
 async function toggleFolderContents(folderLi, folderId) {
   const sublist = folderLi.querySelector('ul');
-  const spinner = folderLi.querySelector('.spinner');
 
   if (sublist) {
     sublist.style.display = sublist.style.display === 'none' ? 'block' : 'none';
@@ -38,6 +38,9 @@ async function toggleFolderContents(folderLi, folderId) {
   folderLi.appendChild(loadingSpinner);
 
   const contents = await fetchFolderContents(folderId);
+
+  // Sort contents alphabetically by name
+  contents.sort((a, b) => a.name.localeCompare(b.name));
 
   loadingSpinner.remove();
 
@@ -72,6 +75,10 @@ async function init() {
   fileList.innerHTML = '<li>Loading...</li>';
 
   const contents = await fetchFolderContents(ROOT_FOLDER_ID);
+
+  // Sort contents alphabetically by name
+  contents.sort((a, b) => a.name.localeCompare(b.name));
+
   fileList.innerHTML = '';
   contents.forEach((item) => {
     const li = document.createElement('li');
