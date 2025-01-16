@@ -22,7 +22,7 @@ async function fetchFolderContents(folderId) {
 function createSpinner() {
   const spinner = document.createElement('div');
   spinner.className = 'spinner';
-  spinner.textContent = 'Loading...';
+  // spinner.textContent = 'Loading...';
   return spinner;
 }
 
